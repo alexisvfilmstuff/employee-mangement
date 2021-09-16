@@ -1,4 +1,4 @@
-
+--info of the schema database-- 
 
 CREATE DATABASE employees_db; 
 
@@ -23,7 +23,9 @@ CREATE TABLE employees (
   last_name VARCHAR(25) NOT NULL,
   role_id INT UNSIGNED NOT NULL, 
   manager_id INT UNSIGNED NOT NULL, 
-  FOREIGN KEY (role_id) REFERENCES roles(id)
+  FOREIGN KEY (role_id) REFERENCES roles(id),
   FOREIGN KEY (manager_id) REFERENCES employees(id)
 );
+
+--giving views of the schema database input--
 
