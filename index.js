@@ -128,3 +128,25 @@ const addEmployee = () => {
   })
   .catch(err => console.log(err))
 }
+
+//department query statement to update data and view it//
+const viewDepartments = () => {
+  db.query('SELECT departments.id, departments.name as department FROM departments', (err, departments) => {console.table(departments)
+  int()
+  })
+}
+//role query statement to update data and view it// 
+const viewRoles = () => {
+  db.query('SELECT roles.id, roles.title, roles.salary, departments.name as department FROM roles LEFT JOIN departments ON roles.department_id = departments.id', (err,roles) => {
+    console.table(roles)
+    init()
+  })
+}
+//employee query statement to update data and view it// 
+const viewEmployees = () => {
+  db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS 'department', CONCAT(manager.first_name, ' ', manager.last_name) AS 'manager' FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id`, (err,employees) => {
+    console.table(employees)
+    init()
+  })
+}
+
