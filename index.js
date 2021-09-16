@@ -42,3 +42,49 @@ const init = () => {
     }
   })
 }
+
+const addDepartment = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: `Please Enter New Department's Name:`
+    }
+  ])
+  .then(newDep => {
+    db.query(`INSERT INTO departments SET ?`, newDep, err => {
+      if(err) {console.log(error)}
+      else {console.log(`----${newDep.name} department has been added----`)}
+      init()
+    })
+  })
+  .catch(err => console.log(err))
+}
+
+const addRole = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'title',
+      message: 'Role Title:'
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'Role Salary:'
+    }
+    {
+      type: 'input',
+      name: 'department_id',
+      message: 'Role Department_id:'
+    }
+  ])
+  .then(newRole => {
+    db.query(`INSERT INTO roles SET ?`, newRole, err => {
+      if (err) { console.log(error) }
+      else { console.log(`----${newRole.title} role has been added----`) }
+      init()
+    })
+  })
+  .catch(err => console.log(err))
+}
