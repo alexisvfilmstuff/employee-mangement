@@ -149,4 +149,53 @@ const viewEmployees = () => {
     init()
   })
 }
+//employee query statement to prompt and updated employee information based on inputs// 
+const updateEmployee = () => {
+  db.query('SELECT * FROM roles', (err,roles) => {
+    db.query('SELECT * FROM employees', (err, employees) => {
+      prompt([
+        {
+          type: 'list',
+          name: 'id',
+          message: 'Select an Employee to Update',
+          choices: employees.map(employee => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id
+          }))
+        },
+        {
+          type: 'list',
+          name: 'role_id',
+          message: `Employee's New Role: `,
+          choices: roles.map(role => ({
+            name: role.title,
+            value: employee.id
+          }))
+        },
+        {
+          type: 'list',
+          name: 'manager_id',
+          message: `Employee's New Manger:`,
+          choices: employees.map(employee => ({
+            name: `${employee.first_name} ${employee.last_name}`,
+            value: employee.id
+          }))
+        }
+      ])
+      .then(({ id, role_id, manager_id}) => {
+        let update = {
+          manager_id,
+          role_id
+        }
+        db.query('UPDATE employees SET ? WHERE ?', [update,{id}], err => {
+          if (err) {console.log(err)}
+          else {console.log('Employee has been updated')}
+          init()
+        })
+      })
+      .catch(err => console.log(err))
+    })
+  })
+}
 
+init()
