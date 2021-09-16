@@ -43,6 +43,7 @@ const init = () => {
   })
 }
 
+//adding Department function with if then statement and catching error// 
 const addDepartment = () => {
   prompt([
     {
@@ -61,6 +62,7 @@ const addDepartment = () => {
   .catch(err => console.log(err))
 }
 
+//adding Role function with if then statement and catching error// 
 const addRole = () => {
   prompt([
     {
@@ -83,6 +85,44 @@ const addRole = () => {
     db.query(`INSERT INTO roles SET ?`, newRole, err => {
       if (err) { console.log(error) }
       else { console.log(`----${newRole.title} role has been added----`) }
+      init()
+    })
+  })
+  .catch(err => console.log(err))
+}
+//adding Employee function with if then statement and catching error//
+const addEmployee = () => {
+  prompt([
+    {
+      type: 'input',
+      name: 'first_name',
+      message: `Employee's First Name:`
+    },
+    {
+      type: 'input',
+      name: 'last_name',
+      message: `Employee's Last Name:`
+    },
+    {
+      type: 'number',
+      name: 'role_id',
+      message: `Employee's Role ID:`
+    },
+    {
+      type: 'number',
+      name: 'manager_id',
+      message: `Employee's Manger's ID:`
+    },
+  ])
+  .then(newEmp => {
+    if (!newEmp.manager_id) {
+      delete newEmp.manager_id
+    }
+    console.log(newEmp)
+
+    db.query('INSERT INTO employees SET ?', newEmp, err => {
+      if (err) {console.log(err)}
+      else {console.log(`----${newEmp.first_name} has been added`)}
       init()
     })
   })
