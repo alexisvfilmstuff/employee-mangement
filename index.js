@@ -1,7 +1,7 @@
 // mysql and database connection, require inquirer // 
 
 const { prompt } = require('inquirer')
-const { createConnection } = require('myslq2')
+const { createConnection } = require('mysql2')
 require('console.table')
 
 const db = createConnection('mysql://root:rootroot@localhost/employees_db')
@@ -19,7 +19,7 @@ const init = () => {
   .then(({action}) => {
     switch (action) {
       case 'Add Department':
-        addDepartment()
+       addDepartment()
         break;
       case 'Add Role':
         addRole()
@@ -32,15 +32,17 @@ const init = () => {
         break;
       case 'View Roles':
         viewRoles()
+        console.log('ping')
         break;
       case 'View Employees':
         viewEmployees()
         break;
-      case 'Update Employee':
+      case 'Update Employees':
         updateEmployee()
         break;
     }
   })
+  .catch(err => console.log(err))
 }
 
 //adding Department function with if then statement and catching error// 
@@ -54,7 +56,7 @@ const addDepartment = () => {
   ])
   .then(newDep => {
     db.query(`INSERT INTO departments SET ?`, newDep, err => {
-      if(err) {console.log(error)}
+      if (err) { console.log(err) }
       else {console.log(`----${newDep.name} department has been added----`)}
       init()
     })
@@ -67,14 +69,14 @@ const addRole = () => {
   prompt([
     {
       type: 'input',
-      name: 'title',
+      name: 'name',
       message: 'Role Title:'
     },
     {
       type: 'input',
       name: 'salary',
       message: 'Role Salary:'
-    }
+    },
     {
       type: 'input',
       name: 'department_id',
@@ -82,9 +84,10 @@ const addRole = () => {
     }
   ])
   .then(newRole => {
+    console.log(newRole)
     db.query(`INSERT INTO roles SET ?`, newRole, err => {
-      if (err) { console.log(error) }
-      else { console.log(`----${newRole.title} role has been added----`) }
+      if (err) { console.log(err) }
+      else {console.log(`----${newRole.name} role has been added----`)}
       init()
     })
   })
@@ -132,19 +135,21 @@ const addEmployee = () => {
 //department query statement to update data and view it//
 const viewDepartments = () => {
   db.query('SELECT departments.id, departments.name as department FROM departments', (err, departments) => {console.table(departments)
-  int()
+  init()
   })
 }
 //role query statement to update data and view it// 
 const viewRoles = () => {
-  db.query('SELECT roles.id, roles.title, roles.salary, departments.name as department FROM roles LEFT JOIN departments ON roles.department_id = departments.id', (err,roles) => {
+  console.log('pong')
+  db.query('SELECT roles.id, roles.name, roles.salary, departments.name as department FROM roles LEFT JOIN departments ON roles.department_id = departments.id', (err, roles) => {
     console.table(roles)
     init()
   })
 }
 //employee query statement to update data and view it// 
 const viewEmployees = () => {
-  db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.name AS 'department', CONCAT(manager.first_name, ' ', manager.last_name) AS 'manager' FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id`, (err,employees) => {
+  db.query(`SELECT employees.id, employees.first_name, employees.last_name, roles.name, roles.salary, departments.name AS 'department', CONCAT(manager.first_name, ' ', manager.last_name) AS 'manager' FROM employees LEFT JOIN roles ON employees.role_id = roles.id LEFT JOIN departments ON roles.department_id = departments.id LEFT JOIN employees manager ON manager.id = employees.manager_id`, (err,employees) => {
+    console.log(employees)
     console.table(employees)
     init()
   })
@@ -168,8 +173,8 @@ const updateEmployee = () => {
           name: 'role_id',
           message: `Employee's New Role: `,
           choices: roles.map(role => ({
-            name: role.title,
-            value: employee.id
+            name: role.name,
+            value: role.id
           }))
         },
         {
